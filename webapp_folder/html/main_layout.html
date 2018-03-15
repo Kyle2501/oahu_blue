@@ -1,20 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="oahu" ng-controller="Ctrl">
 <head>
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
 <title></title>
 
 
+<script type="text/javascript" src="../../files/angular1.5.min.js"></script>
+<script>
+var oahu = angular.module("oahu", [],
+  function($interpolateProvider) {
+    $interpolateProvider.startSymbol('[!');
+    $interpolateProvider.endSymbol('!]');
+}); ///
+
+
+oahu.controller('Ctrl', function($scope, $http, $sce) {
+  $scope.layout_style = 'desktop';
+  if(window.innerWidth < 1000){ $scope.layout_style = 'mobile'; }
+  $scope.show_filters = 'no';
+  $scope.show_gear = 'no';
+  $scope.user_name = '{{ user_name }}';
+  
+  $scope.main_nav = 'no';
+  $scope.show_nav = 'no';
+  
+  $scope.home_menu = 'no';
+  
+  $scope.bottom_slide = 'no';
+
+
+}); ///
+</script>
+
 <style>
 
+.top_bar_wrap { position: fixed; top: 0; right: 0; left: 0; height: 45px; background-color: #eee; border-bottom: 1px solid #333; z-index: 2200; }
+.main_nav_button { position: fixed; top: 5px; right: 5px; width: 35px; height: 35px; border: 1px solid blue; cursor:pointer; }
 
+.left_slide_wrap { position: fixed; left: 0; top: 0; bottom: 0; width: 200px; z-index: 2750; }
+.left_slide_data {  background-color: #fff; left: 0; top: 0; bottom: 0; width: 200px; z-index: 2751; position: absolute; outline: 1px solid red; }
+
+.main_nav { width: 185px; margin-top: 25px; }
+
+.main_nav li { list-style: none; text-align: right; margin-bottom: 14px; cursor: pointer;
+padding-right: 10px; margin-right: 5px; border-right: 4px solid #fff;  color: #555; }
+.main_nav ul li:hover { border-right: 4px solid #333; color: #000; }
+.main_nav a { text-decoration: none;  }
+
+
+.page_wrap { outline: 1px dashed #999; min-height: 250px; margin-top: 50px; }
+.page_data { margin: 5px; }
+
+
+.about_button { position: absolute; top: 65px; right: 10px; }
+
+
+
+.scroll_button_wrap { position: fixed; right: 5px; bottom: 35%; height: 55px; width: 40px; border: 1px dashed #555;  }
+
+
+.back_button_wrap { position: fixed; left: 10px; bottom: 65px; width: 45px; height: 35px; border: 1px dashed #999; }
+
+.menu_slide_wrap { border: 1px dashed #888; margin: 0 auto; width: 75%; height: 50px; position: fixed; left: 0; right: 0; bottom: 55px; }
+
+.bottom_slide_data { position: fixed; left: 0; right: 0; height: 35%; bottom: 55px; background-color: #444; color: #fff; }
+
+
+.bottom_bar_wrap { position: fixed; left: 0; right: 0; bottom: 0; height: 55px; background-color: #eee; border-top: 1px solid #333; z-index: 2200; }
+
+.footer_login_wrap { position: fixed; left: 10px; bottom: 7px;  }
+.footer_login_wrap a { text-decoration: none; font-size: 14px; color: #111; }
+.footer_login_wrap a:hover { text-decoration: underline; }
+
+.myaccount_footer a { display: block; font-size: 12px; letter-spacing: 0.08em; margin-bottom: 7px; }
+
+.footer_menu_button { width: 40px; height: 40px; margin: 0 auto; border: 1px dashed #444; margin-top: 5px; cursor: pointer; }
+
+.bottom_slide_button { position: fixed; bottom: 5px; right: 5px; width: 40px; height: 40px; border: 1px solid #888; cursor: pointer; }
 
 </style>
 
 </head>
 <body>
 
+<header class="top_bar_wrap">
+  <div class="top_bar_data">
+    <div class="logo_wrap">Oahu.blue</div>
+    <div class="main_nav_button" ng-show="main_nav=='yes'" ng-click="main_nav='no'"></div>
+    <div class="main_nav_button" ng-show="main_nav=='no'" ng-click="main_nav='yes'"></div>
+  </div><!-- . top_bar_data - -->
+</header>
+
+
+<aside class="left_slide_wrap" ng-show="main_nav=='yes'">
+  <div class="left_slide_data">
+  
+  <nav class="main_nav">
+    <ul>{{ main_nav|safe }}</ul>
+  </nav>
+  </div><!-- . left_slide_data - -->
+</aside>
+
+<main class="page_wrap">
+  <div class="page_data">hi test
+    {{ page_html|safe }}
+  </div><!-- . page_data - -->
+</main>
+
+<aside class="scroll_button_wrap">
+  <div class="scroll_button_data">
+    
+  </div><!-- . scroll_button_data - -->
+</aside>
+
+<aside class="back_button_wrap">
+
+</aside>
+
+<aside class="bottom_slide_wrap" ng-show="bottom_slide=='yes'">
+  <div class="bottom_slide_data">
+    hi test
+  </div><!-- . bottom_slide_data - -->
+</aside>
+<aside class="menu_slide_wrap" ng-show="home_menu=='yes'">
 hi test
+</aside>
+<footer class="bottom_bar_wrap">
+  <div class="bottom_bar_data">
+  <div class="footer_login_wrap">
+    {% if user_name != 'No User' %}
+    <div class="myaccount_footer"><a href="/my_account">{{ user_name }}</a></div>
+    {% endif %}
+      <a href="{{ login_key }}">{{ gate }}</a>
+    </div>
+    <div class="footer_menu_button" ng-show="home_menu=='yes'" ng-click="home_menu='no'"></div>
+    <div class="footer_menu_button" ng-show="home_menu=='no'" ng-click="home_menu='yes'"></div>
+    <div class="bottom_slide_button" ng-show="bottom_slide=='yes'" ng-click="bottom_slide='no'"></div>
+    <div class="bottom_slide_button" ng-show="bottom_slide=='no'" ng-click="bottom_slide='yes'"></div>
+  </div><!-- . bottom_bar_data - -->
+</footer>
 
 </body>
 </html>
